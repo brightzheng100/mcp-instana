@@ -4,6 +4,7 @@ Base Instana API Client Module
 This module provides the base client for interacting with the Instana API.
 """
 
+import os
 import sys
 from functools import wraps
 from typing import Any, Callable, Dict, Union
@@ -17,6 +18,14 @@ def register_as_tool(func):
     """Decorator to register a method as an MCP tool."""
     MCP_TOOLS[func.__name__] = func
     return func
+
+def get_instana_credentials():
+    """Get Instana credentials from environment variables for stdio mode."""
+    # For stdio mode, use INSTANA_API_TOKEN and INSTANA_BASE_URL
+    token = (os.getenv("INSTANA_API_TOKEN") or "")
+    base_url = (os.getenv("INSTANA_BASE_URL") or "")
+
+    return token, base_url
 
 def with_header_auth(api_class, allow_mock=True):
     """
