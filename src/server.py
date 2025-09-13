@@ -2,13 +2,12 @@ import logging
 import os
 from typing import Any
 
+import settings
 from fastmcp import FastMCP
 from fastmcp.exceptions import ToolError
 from fastmcp.server.middleware import Middleware, MiddlewareContext
 from fastmcp.server.middleware.error_handling import RetryMiddleware
 from fastmcp.server.middleware.rate_limiting import RateLimitingMiddleware
-
-import settings
 
 logger = logging.getLogger(f"mcp-instana.{__name__}")
 
