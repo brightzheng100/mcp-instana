@@ -6,7 +6,7 @@ from unittest.mock import MagicMock
 
 import pytest  #type: ignore
 
-from src.application.application_settings import ApplicationSettingsMCPTools
+from mcp_instana.tools.application.application_settings import ApplicationSettingsMCPTools
 
 
 class TestApplicationSettingsE2E:

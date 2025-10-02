@@ -7,7 +7,7 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest  #type: ignore
 
-from src.application.application_metrics import ApplicationMetricsMCPTools
+from mcp_instana.tools.application.application_metrics import ApplicationMetricsMCPTools
 from src.core.server import MCPState, execute_tool
 
 
@@ -37,7 +37,7 @@ class TestApplicationMetricsE2E:
             }
         }
 
-        with patch("src.application.application_metrics.ApplicationMetricsApi") as mock_api_class:
+        with patch("mcp_instana.tools.application.application_metrics.ApplicationMetricsApi") as mock_api_class:
             # Set up the mock API
             mock_api = MagicMock()
             mock_api.get_application_data_metrics_v2.return_value = mock_response
@@ -78,7 +78,7 @@ class TestApplicationMetricsE2E:
             ]
         }
 
-        with patch('src.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
             # Set up the mock API
             mock_api = MagicMock()
             mock_api.get_application_data_metrics_v2.return_value = mock_response
@@ -119,7 +119,7 @@ class TestApplicationMetricsE2E:
     async def test_get_application_data_metrics_v2_error_handling(self, instana_credentials):
         """Test error handling in get_application_data_metrics_v2."""
 
-        with patch('src.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
             # Set up the mock API to raise an exception
             mock_api = MagicMock()
             mock_api.get_application_data_metrics_v2.side_effect = Exception("API Error")
@@ -169,7 +169,7 @@ class TestApplicationMetricsE2E:
             ]
         }
 
-        with patch('src.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
             # Set up the mock API
             mock_api = MagicMock()
             mock_api.get_application_metrics.return_value = mock_response
@@ -223,8 +223,8 @@ class TestApplicationMetricsE2E:
             "applicationIds": ["app-1", "app-2"]
         }
 
-        with patch('src.application.application_metrics.ApplicationMetricsApi') as mock_api_class, \
-             patch('src.application.application_metrics.GetApplications', return_value=get_applications_dict):
+        with patch('mcp_instana.tools.application.application_metrics.ApplicationMetricsApi') as mock_api_class, \
+             patch('mcp_instana.tools.application.application_metrics.GetApplications', return_value=get_applications_dict):
             # Set up the mock API
             mock_api = MagicMock()
             mock_api.get_application_metrics.return_value = mock_response
@@ -265,7 +265,7 @@ class TestApplicationMetricsE2E:
     async def test_get_application_metrics_error_handling(self, instana_credentials):
         """Test error handling in get_application_metrics."""
 
-        with patch('src.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
             # Set up the mock API to raise an exception
             mock_api = MagicMock()
             mock_api.get_application_metrics.side_effect = Exception("API Error")
@@ -314,7 +314,7 @@ class TestApplicationMetricsE2E:
             ]
         }
 
-        with patch('src.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
             # Set up the mock API
             mock_api = MagicMock()
             # Use get_application_data_metrics_v2 instead of get_application_data_metrics
@@ -346,7 +346,7 @@ class TestApplicationMetricsE2E:
     async def test_get_application_data_metrics_error_handling(self, instana_credentials):
         """Test error handling in get_application_data_metrics."""
 
-        with patch('src.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
             # Set up the mock API to raise an exception
             mock_api = MagicMock()
             # Use get_application_data_metrics_v2 instead of get_application_data_metrics
@@ -404,8 +404,8 @@ class TestApplicationMetricsE2E:
             "endpointIds": ["endpoint-1", "endpoint-2"]
         }
 
-        with patch('src.application.application_metrics.ApplicationMetricsApi') as mock_api_class, \
-             patch('src.application.application_metrics.GetEndpoints', return_value=get_endpoints_dict):
+        with patch('mcp_instana.tools.application.application_metrics.ApplicationMetricsApi') as mock_api_class, \
+             patch('mcp_instana.tools.application.application_metrics.GetEndpoints', return_value=get_endpoints_dict):
             # Set up the mock API
             mock_api = MagicMock()
             mock_api.get_endpoints_metrics.return_value = mock_response
@@ -478,8 +478,8 @@ class TestApplicationMetricsE2E:
             "serviceIds": ["service-1"]
         }
 
-        with patch('src.application.application_metrics.ApplicationMetricsApi') as mock_api_class, \
-             patch('src.application.application_metrics.GetServices', return_value=get_services_dict):
+        with patch('mcp_instana.tools.application.application_metrics.ApplicationMetricsApi') as mock_api_class, \
+             patch('mcp_instana.tools.application.application_metrics.GetServices', return_value=get_services_dict):
             # Set up the mock API
             mock_api = MagicMock()
             mock_api.get_services_metrics.return_value = mock_response
@@ -526,7 +526,7 @@ class TestApplicationMetricsE2E:
     async def test_get_services_metrics_error_handling(self, instana_credentials):
         """Test error handling in get_services_metrics."""
 
-        with patch('src.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_metrics.ApplicationMetricsApi') as mock_api_class:
             # Set up the mock API to raise an exception
             mock_api = MagicMock()
             mock_api.get_services_metrics.side_effect = Exception("API Error")
@@ -558,7 +558,7 @@ class TestApplicationMetricsE2E:
 
         # For this test, we need to check for error handling in the client code
         # rather than expecting an exception to be raised
-        with patch("src.application.application_metrics.ApplicationMetricsApi",
+        with patch("mcp_instana.tools.application.application_metrics.ApplicationMetricsApi",
                   side_effect=Exception("Initialization Error")):
 
             # Create the client - it should handle the exception internally
@@ -593,7 +593,7 @@ class TestApplicationMetricsE2E:
 
                 # Execute the tool
         # debug_print is not exported from the module, so we'll test the module import instead
-        with patch('src.application.application_metrics.ApplicationMetricsMCPTools'):
+        with patch('mcp_instana.tools.application.application_metrics.ApplicationMetricsMCPTools'):
             _ = await execute_tool(
                 "get_application_data_metrics_v2",
                 tool_params,
@@ -723,9 +723,9 @@ class TestApplicationMetricsE2E:
             "to": fixed_timestamp_ms
         }
 
-        with patch('src.application.application_metrics.ApplicationMetricsApi') as mock_api_class, \
-             patch('src.application.application_metrics.datetime') as mock_datetime, \
-             patch('src.application.application_metrics.GetApplicationMetrics', return_value=mock_get_app_metrics):
+        with patch('mcp_instana.tools.application.application_metrics.ApplicationMetricsApi') as mock_api_class, \
+             patch('mcp_instana.tools.application.application_metrics.datetime') as mock_datetime, \
+             patch('mcp_instana.tools.application.application_metrics.GetApplicationMetrics', return_value=mock_get_app_metrics):
             # Set up the mock datetime
             mock_now = MagicMock()
             mock_now.timestamp.return_value = fixed_timestamp
@@ -938,7 +938,7 @@ class TestApplicationMetricsE2E:
 
         with patch('instana_client.api.application_metrics_api.ApplicationMetricsApi.get_application_data_metrics_v2',
                   return_value=mock_response), \
-             patch('src.application.application_metrics.datetime') as mock_datetime:
+             patch('mcp_instana.tools.application.application_metrics.datetime') as mock_datetime:
 
             # Set up the mock datetime
             mock_now = MagicMock()
@@ -980,7 +980,7 @@ class TestApplicationMetricsE2E:
 
         with patch('instana_client.api.application_metrics_api.ApplicationMetricsApi.get_application_metrics',
                   return_value=mock_response), \
-             patch('src.application.application_metrics.datetime') as mock_datetime:
+             patch('mcp_instana.tools.application.application_metrics.datetime') as mock_datetime:
 
             # Set up the mock datetime
             mock_now = MagicMock()
@@ -1022,7 +1022,7 @@ class TestApplicationMetricsE2E:
 
         with patch('instana_client.api.application_metrics_api.ApplicationMetricsApi.get_endpoints_metrics',
                   return_value=mock_response), \
-             patch('src.application.application_metrics.datetime') as mock_datetime:
+             patch('mcp_instana.tools.application.application_metrics.datetime') as mock_datetime:
 
             # Set up the mock datetime
             mock_now = MagicMock()
@@ -1064,7 +1064,7 @@ class TestApplicationMetricsE2E:
 
         with patch('instana_client.api.application_metrics_api.ApplicationMetricsApi.get_services_metrics',
                   return_value=mock_response), \
-             patch('src.application.application_metrics.datetime') as mock_datetime:
+             patch('mcp_instana.tools.application.application_metrics.datetime') as mock_datetime:
 
             # Set up the mock datetime
             mock_now = MagicMock()

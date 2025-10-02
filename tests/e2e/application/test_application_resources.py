@@ -53,7 +53,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -83,7 +83,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -126,7 +126,7 @@ class TestApplicationResourcesE2E:
                   side_effect=Exception("API Error")):
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -160,7 +160,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -199,7 +199,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -229,7 +229,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -269,7 +269,7 @@ class TestApplicationResourcesE2E:
                   side_effect=Exception("API Error")):
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -300,7 +300,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -343,7 +343,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -389,7 +389,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -422,7 +422,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -465,7 +465,7 @@ class TestApplicationResourcesE2E:
                   side_effect=Exception("API Error")):
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -498,7 +498,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -534,7 +534,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -574,7 +574,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -603,7 +603,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -644,7 +644,7 @@ class TestApplicationResourcesE2E:
                   side_effect=Exception("API Error")):
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(
@@ -674,7 +674,7 @@ class TestApplicationResourcesE2E:
             mock_method.return_value = mock_response
 
             # Import and create the client
-            from src.application.application_resources import (
+            from mcp_instana.tools.application.application_resources import (
                 ApplicationResourcesMCPTools,
             )
             client = ApplicationResourcesMCPTools(

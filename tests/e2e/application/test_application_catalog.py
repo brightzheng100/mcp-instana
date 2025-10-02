@@ -6,7 +6,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from src.application.application_catalog import ApplicationCatalogMCPTools
+from mcp_instana.tools.application.application_catalog import ApplicationCatalogMCPTools
 
 
 class TestApplicationCatalogE2E:
@@ -21,7 +21,7 @@ class TestApplicationCatalogE2E:
         mock_response = MagicMock()
         mock_response.data = '{"tagTree": [{"label": "Commonly Used", "children": []}]}'
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             # Set up the mock API
             mock_api = MagicMock()
             mock_api.get_application_tag_catalog_without_preload_content.return_value = mock_response
@@ -55,7 +55,7 @@ class TestApplicationCatalogE2E:
         mock_response = MagicMock()
         mock_response.data = '"{\\"tagTree\\": [{\\"label\\": \\"test-tag\\", \\"children\\": []}]}"'
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             # Set up the mock API
             mock_api = MagicMock()
             mock_api.get_application_tag_catalog_without_preload_content.return_value = mock_response
@@ -111,7 +111,7 @@ class TestApplicationCatalogE2E:
         mock_response = MagicMock()
         mock_response.data = '42'  # Not a dict or list
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             # Set up the mock API
             mock_api = MagicMock()
             mock_api.get_application_tag_catalog_without_preload_content.return_value = mock_response
@@ -163,7 +163,7 @@ class TestApplicationCatalogE2E:
         """Test handling of list results in metric catalog."""
 
         # Mock the API class
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             # Set up the mock API
             mock_api = MagicMock()
             mock_result = MagicMock()
@@ -191,7 +191,7 @@ class TestApplicationCatalogE2E:
         """Test handling of results without to_dict method in metric catalog."""
 
         # Mock the API class
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             # Set up the mock API
             mock_api = MagicMock()
             # Create a result without to_dict method
@@ -333,7 +333,7 @@ class TestApplicationCatalogE2E:
     async def test_parameter_validation(self, instana_credentials):
         """Test parameter validation for the catalog methods."""
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_response = MagicMock()
             mock_response.data = '{"tagTree": []}'
@@ -366,7 +366,7 @@ class TestApplicationCatalogE2E:
         mock_response = MagicMock()
         mock_response.data = '{"tagTree": [{"label": "test-tag", "children": []}]}'
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_api.get_application_tag_catalog_without_preload_content.return_value = mock_response
             mock_api_class.return_value = mock_api
@@ -410,7 +410,7 @@ class TestApplicationCatalogE2E:
             ]
         }'''
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_api.get_application_tag_catalog_without_preload_content.return_value = mock_response
             mock_api_class.return_value = mock_api
@@ -432,7 +432,7 @@ class TestApplicationCatalogE2E:
     async def test_get_application_metric_catalog_with_complex_object(self, instana_credentials):
         """Test handling of complex metric objects."""
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
 
             # Create a complex mock object that simulates the SDK response
@@ -496,7 +496,7 @@ class TestApplicationCatalogE2E:
         mock_response = MagicMock()
         mock_response.data = '{}'
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_api.get_application_tag_catalog_without_preload_content.return_value = mock_response
             mock_api_class.return_value = mock_api
@@ -540,7 +540,7 @@ class TestApplicationCatalogE2E:
         mock_response = MagicMock()
         mock_response.data = '{"tagTree": [{"label": "test-tag", "children": []}]}'
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_api.get_application_tag_catalog_without_preload_content.return_value = mock_response
             mock_api_class.return_value = mock_api
@@ -563,7 +563,7 @@ class TestApplicationCatalogE2E:
         mock_response = MagicMock()
         mock_response.data = '{"tagTree": [{"label": "test-tag", "children": []}]}'
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_api.get_application_tag_catalog_without_preload_content.return_value = mock_response
             mock_api_class.return_value = mock_api
@@ -606,7 +606,7 @@ class TestApplicationCatalogE2E:
         mock_response = MagicMock()
         mock_response.data = '{"tagTree": [{"label": "test-tag", "children": []}]}'
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_api.get_application_tag_catalog_without_preload_content.return_value = mock_response
             mock_api_class.return_value = mock_api
@@ -632,7 +632,7 @@ class TestApplicationCatalogE2E:
     async def test_get_application_metric_catalog_debug_print_coverage(self, instana_credentials):
         """Test to ensure debug_print statements in metric catalog are covered."""
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_result = MagicMock()
             mock_result.to_dict.return_value = {"metrics": [{"id": "test", "name": "Test"}]}
@@ -657,7 +657,7 @@ class TestApplicationCatalogE2E:
         mock_response = MagicMock()
         mock_response.data = '{"tagTree": [{"label": "test-tag", "children": []}]}'
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_api.get_application_tag_catalog_without_preload_content.return_value = mock_response
             mock_api_class.return_value = mock_api
@@ -680,7 +680,7 @@ class TestApplicationCatalogE2E:
         mock_response = MagicMock()
         mock_response.data = '"{\\"tagTree\\": [{\\"label\\": \\"test-tag\\", \\"children\\": []}]}"'
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_api.get_application_tag_catalog_without_preload_content.return_value = mock_response
             mock_api_class.return_value = mock_api
@@ -700,7 +700,7 @@ class TestApplicationCatalogE2E:
     async def test_get_application_metric_catalog_list_to_dict(self, instana_credentials):
         """Test handling when to_dict returns a list."""
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_result = MagicMock()
             mock_result.to_dict.return_value = [{"id": "test", "name": "Test"}]
@@ -791,7 +791,7 @@ class TestApplicationCatalogE2E:
         mock_response = MagicMock()
         mock_response.data = '{"tagTree": [{"label": "test-tag", "children": []}]}'
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_api.get_application_tag_catalog_without_preload_content.return_value = mock_response
             mock_api_class.return_value = mock_api
@@ -815,7 +815,7 @@ class TestApplicationCatalogE2E:
         mock_result = MagicMock()
         mock_result.to_dict.return_value = {"metrics": [{"id": "test", "name": "Test"}]}
 
-        with patch('src.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
+        with patch('mcp_instana.tools.application.application_catalog.ApplicationCatalogApi') as mock_api_class:
             mock_api = MagicMock()
             mock_api.get_application_catalog_metrics.return_value = mock_result
             mock_api_class.return_value = mock_api

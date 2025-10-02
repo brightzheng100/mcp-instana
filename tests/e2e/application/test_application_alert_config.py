@@ -14,7 +14,9 @@ class ApiException(Exception):
         self.reason = reason
         super().__init__(*args, **kwargs)
 
-from src.application.application_alert_config import ApplicationAlertMCPTools
+from mcp_instana.tools.application.application_alert_config import (
+    ApplicationAlertMCPTools,
+)
 
 
 class TestApplicationAlertConfigE2E:

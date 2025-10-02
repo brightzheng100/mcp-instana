@@ -199,7 +199,7 @@ class TestMCPServerIntegrationE2E:
     async def test_create_clients_client_creation_error(self, instana_credentials):
         """Test create_clients when client creation fails."""
         # Mock the specific client class to raise an exception
-        with patch('src.application.application_resources.ApplicationResourcesMCPTools.__init__', side_effect=Exception("Client creation failed")):
+        with patch('mcp_instana.tools.application.application_resources.ApplicationResourcesMCPTools.__init__', side_effect=Exception("Client creation failed")):
             result = create_clients(
                 token=instana_credentials["api_token"],
                 base_url=instana_credentials["base_url"],
