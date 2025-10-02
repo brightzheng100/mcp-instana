@@ -56,5 +56,5 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD python -c "import requests; requests.get('http://127.0.0.1:8080/health', timeout=5)" || exit 1
 
 # Run the server
-ENTRYPOINT ["python", "-m", "src.core.server"]
+ENTRYPOINT ["python", "-m", "mcp_instana.server"]
 CMD ["--transport", "streamable-http"]

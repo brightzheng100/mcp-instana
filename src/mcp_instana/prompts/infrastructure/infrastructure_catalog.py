@@ -1,18 +1,18 @@
 from typing import Optional
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class InfrastructureCatalogPrompts:
     """Class containing infrastructure catalog related prompts"""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_available_payload_keys_by_plugin_id(plugin_id: str) -> str:
         """Retrieve available payload keys for a specific plugin"""
         return f"Get payload keys for plugin ID: {plugin_id}"
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_infrastructure_catalog_metrics(plugin: str, filter: Optional[str] = None) -> str:
         """
@@ -28,13 +28,13 @@ class InfrastructureCatalogPrompts:
         - Filter: {filter or 'None'}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_tag_catalog(plugin: str) -> str:
         """Get available tags for a specific plugin"""
         return f"Get tag catalog for plugin: {plugin}"
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_tag_catalog_all() -> str:
         """Retrieve the complete list of tags available across all monitored entities"""

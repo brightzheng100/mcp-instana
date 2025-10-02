@@ -12,13 +12,43 @@ from typing import Any, Callable, Dict, Union
 import requests
 from fastmcp import FastMCP
 
+# Import MCP dependencies
+from mcp.types import ToolAnnotations
+
 # Registry to store all tools
 MCP_TOOLS = {}
 
-def register_as_tool(func):
-    """Decorator to register a method as an MCP tool."""
-    MCP_TOOLS[func.__name__] = func
-    return func
+def register_as_tool(title=None, annotations=None):
+    """
+    Enhanced decorator that registers both in MCP_TOOLS and with @mcp.tool
+
+    Args:
+        title: Title for the MCP tool (optional, defaults to function name)
+        annotations: ToolAnnotations for the MCP tool (optional)
+    """
+    def decorator(func):
+        # Get function metadata
+        func_name = func.__name__
+
+        # Use provided title or generate from function name
+        tool_title = title or func_name.replace('_', ' ').title()
+
+        # Use provided annotations or default
+        tool_annotations = annotations or ToolAnnotations(
+            readOnlyHint=True,
+            destructiveHint=False
+        )
+
+        # Store the metadata for later use by the server
+        func._mcp_title = tool_title
+        func._mcp_annotations = tool_annotations
+
+        # Register in MCP_TOOLS (existing functionality)
+        MCP_TOOLS[func_name] = func
+
+        return func
+
+    return decorator
 
 def get_instana_credentials():
     """Get Instana credentials from environment variables for stdio mode."""
@@ -170,7 +200,12 @@ def with_header_auth(api_class, allow_mock=True):
                 print(f"Error in header auth decorator: {e}", file=sys.stderr)
                 import traceback
                 traceback.print_exc(file=sys.stderr)
-                return {"error": f"Authentication error: {e!s}"}
+                # Handle the specific case where e might be a string
+                if isinstance(e, str):
+                    error_msg = f"Authentication error: {e}"
+                else:
+                    error_msg = f"Authentication error: {e!s}"
+                return {"error": error_msg}
 
         return wrapper
     return decorator
@@ -180,23 +215,6 @@ def create_app(token: str, base_url: str, port: int = int(os.getenv("PORT", "808
     """Create and configure the MCP server with the given credentials."""
     server = FastMCP(name="Instana MCP Server", host="0.0.0.0", port=port)
     return server, 0
-
-async def execute_tool(tool_name: str, arguments: dict, clients_state) -> str:
-    """Execute a tool and return result"""
-    try:
-        # Get all field names from MCPState dataclass
-        client_attr_names = [field.name for field in fields(MCPState)]
-
-        for attr_name in client_attr_names:
-            client = getattr(clients_state, attr_name, None)
-            if client and hasattr(client, tool_name):
-                method = getattr(client, tool_name)
-                result = await method(**arguments)
-                return str(result)
-
-        return f"Tool {tool_name} not found"
-    except Exception as e:
-        return f"Error executing tool {tool_name}: {e!s}"
 
 class BaseInstanaClient:
     """Base client for Instana API with common functionality."""
@@ -215,6 +233,8 @@ class BaseInstanaClient:
 
     async def make_request(self, endpoint: str, params: Union[Dict[str, Any], None] = None, method: str = "GET", json: Union[Dict[str, Any], None] = None) -> Dict[str, Any]:
         """Make a request to the Instana API."""
+        if endpoint is None:
+            return {"error": "Endpoint cannot be None"}
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
         headers = self.get_headers()
 

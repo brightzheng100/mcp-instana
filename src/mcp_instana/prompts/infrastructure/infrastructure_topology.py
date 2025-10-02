@@ -1,12 +1,12 @@
 from typing import Optional
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class InfrastructureTopologyPrompts:
     """Class containing infrastructure topology related prompts"""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_related_hosts(
         snapshot_id: str,
@@ -21,7 +21,7 @@ class InfrastructureTopologyPrompts:
         - Window size: {window_size or '1 hour'}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_topology(include_data: Optional[bool] = False) -> str:
         """Retrieve the complete infrastructure topology"""

@@ -1,12 +1,12 @@
 from typing import Optional
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class WebsiteAnalyzePrompts:
     """Class containing website analyze related prompts"""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_website_beacon_groups(payload: Optional[dict] = None, fill_time_series: Optional[bool] = None) -> str:
         """Retrieve grouped website beacon metrics for analyzing performance across different dimensions like page URLs, browsers, or geographic locations"""
@@ -16,7 +16,7 @@ class WebsiteAnalyzePrompts:
         - Fill time series: {fill_time_series or 'None'}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_website_beacons(payload: Optional[dict] = None, fill_time_series: Optional[bool] = None) -> str:
         """Retrieve individual website beacon metrics providing detailed information about specific beacon events"""

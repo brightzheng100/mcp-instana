@@ -5,7 +5,6 @@ E2E tests for Application Catalog MCP Tools
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from mcp_instana.tools.application.application_catalog import ApplicationCatalogMCPTools
 
 

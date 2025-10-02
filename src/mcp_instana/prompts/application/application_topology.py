@@ -1,12 +1,12 @@
 from typing import Optional
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class ApplicationTopologyPrompts:
     """Class containing application topology related prompts"""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_application_topology(
         window_size: Optional[int] = None,

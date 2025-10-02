@@ -1,12 +1,12 @@
 from typing import Optional
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class WebsiteMetricsPrompts:
     """Class containing website metrics related prompts"""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_website_beacon_metrics_v2(payload: Optional[dict] = None) -> str:
         """Retrieve website beacon metrics using the v2 API including page load times, error rates, etc., over a given time frame"""
@@ -15,7 +15,7 @@ class WebsiteMetricsPrompts:
         - Payload: {payload or 'None (will use default payload)'}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_website_page_load(page_id: str, timestamp: int) -> str:
         """Retrieve detailed beacon information for a specific page load event"""

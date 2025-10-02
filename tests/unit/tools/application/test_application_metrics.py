@@ -157,7 +157,9 @@ sys.modules['instana_client.models.get_services'].GetServices = mock_get_service
 # Patch the with_header_auth decorator
 with patch('mcp_instana.utils.with_header_auth', mock_with_header_auth):
     # Import the class to test
-    from mcp_instana.tools.application.application_metrics import ApplicationMetricsMCPTools
+    from mcp_instana.tools.application.application_metrics import (
+        ApplicationMetricsMCPTools,
+    )
 class TestApplicationMetricsMCPTools(unittest.TestCase):
     """Test the ApplicationMetricsMCPTools class"""
 
@@ -172,15 +174,16 @@ class TestApplicationMetricsMCPTools(unittest.TestCase):
         # Store references to the global mocks
         self.mock_configuration = mock_configuration
         self.mock_api_client = mock_api_client
-        self.app_metrics_api = mock_app_metrics_api
+        self.app_metrics_api = MagicMock()
 
         # Create the client
         self.read_token = "test_token"
         self.base_url = "https://test.instana.io"
+
         self.client = ApplicationMetricsMCPTools(read_token=self.read_token, base_url=self.base_url)
 
         # Set up the client's API attribute
-        self.client.metrics_api = mock_app_metrics_api
+        self.client.metrics_api = self.app_metrics_api
 
         # Patch the logger to prevent logging during tests
         patcher = patch('mcp_instana.tools.application.application_metrics.logger')

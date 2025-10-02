@@ -3,7 +3,9 @@ import unittest
 from unittest.mock import patch
 
 from mcp_instana.prompts import PROMPT_REGISTRY
-from mcp_instana.prompts.application.application_catalog import ApplicationCatalogPrompts
+from mcp_instana.prompts.application.application_catalog import (
+    ApplicationCatalogPrompts,
+)
 
 
 class TestApplicationCatalogPrompts(unittest.TestCase):

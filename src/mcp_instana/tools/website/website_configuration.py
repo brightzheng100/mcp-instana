@@ -16,6 +16,8 @@ except ImportError as e:
     logger.error(f"Error importing Instana SDK: {e}", exc_info=True)
     raise
 
+from mcp.types import ToolAnnotations
+
 from mcp_instana.utils import (
     BaseInstanaClient,
     register_as_tool,
@@ -32,7 +34,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
         """Initialize the Website Configuration MCP tools client."""
         super().__init__(read_token=read_token, base_url=base_url)
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Websites",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def get_websites(self, ctx=None, api_client=None) -> List[Dict[str, Any]]:
         """
@@ -65,7 +70,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
             logger.error(f"Error in get_websites: {e}", exc_info=True)
             return [{"error": f"Failed to get websites: {e!s}"}]
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Website",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def get_website(self, website_id: str, ctx=None, api_client=None) -> Dict[str, Any]:
         """
@@ -99,7 +107,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
             logger.error(f"Error in get_website: {e}", exc_info=True)
             return {"error": f"Failed to get website: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Create Website",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def create_website(self,
                             name: str,
@@ -189,7 +200,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
             logger.error(f"Error in create_website: {e}")
             return {"error": f"Failed to create website: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Delete Website",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def delete_website(self, website_id: str, ctx=None, api_client=None) -> Dict[str, Any]:
         """
@@ -216,7 +230,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
             logger.error(f"Error in delete_website: {e}", exc_info=True)
             return {"error": f"Failed to delete website: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Rename Website",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def rename_website(self,
                             website_id: str,
@@ -259,7 +276,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
             logger.error(f"Error in rename_website: {e}", exc_info=True)
             return {"error": f"Failed to rename website: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Website Geo Location Configuration",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def get_website_geo_location_configuration(self,
                                                     website_id: str,
@@ -296,7 +316,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
             logger.error(f"Error in get_website_geo_location_configuration: {e}", exc_info=True)
             return {"error": f"Failed to get website geo-location configuration: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Update Website Geo Location Configuration",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def update_website_geo_location_configuration(self,
                                                         website_id: str,
@@ -412,7 +435,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
             logger.error(f"Error in update_website_geo_location_configuration: {e}")
             return {"error": f"Failed to update website geo-location configuration: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Website IP Masking Configuration",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def get_website_ip_masking_configuration(self, website_id: str, ctx=None, api_client=None) -> Dict[str, Any]:
         """
@@ -446,7 +472,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
             logger.error(f"Error in get_website_ip_masking_configuration: {e}", exc_info=True)
             return {"error": f"Failed to get website IP masking configuration: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Update Website IP Masking Configuration",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def update_website_ip_masking_configuration(self,
                                                         website_id: str,
@@ -559,7 +588,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
             logger.error(f"Error in update_website_ip_masking_configuration: {e}")
             return {"error": f"Failed to update website ip-masking configuration: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Website Geo Mapping Rules",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def get_website_geo_mapping_rules(self, website_id: str, ctx=None, api_client=None) -> List[Dict[str, Any]]:
         """
@@ -623,7 +655,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
             logger.error(f"Error in get_website_geo_mapping_rules: {e}", exc_info=True)
             return [{"error": f"Failed to get website geo mapping rules: {e!s}"}]
 
-    @register_as_tool
+    @register_as_tool(
+        title="Set Website Geo Mapping Rules",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def set_website_geo_mapping_rules(self,
                                             website_id: str,
@@ -668,7 +703,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
             logger.error(f"Error in set_website_geo_mapping_rules: {e}", exc_info=True)
             return {"error": f"Failed to set website geo mapping rules: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Upload Source Map File",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def upload_source_map_file(self,
                                         website_id: str,
@@ -726,7 +764,10 @@ class WebsiteConfigurationMCPTools(BaseInstanaClient):
             logger.error(f"Error in upload_source_map_file: {e}")
             return {"error": f"Failed to upload source map file: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Clear Source Map Upload Configuration",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(WebsiteConfigurationApi)
     async def clear_source_map_upload_configuration(self,
                                                     website_id: str,

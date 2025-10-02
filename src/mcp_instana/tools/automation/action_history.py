@@ -7,6 +7,10 @@ This module provides automation action history tools for Instana Automation.
 import logging
 from typing import Any, Dict, List, Optional, Union
 
+from mcp.types import ToolAnnotations
+
+from src.core.utils import BaseInstanaClient, register_as_tool, with_header_auth
+
 # Import the necessary classes from the SDK
 try:
     from instana_client.api.action_history_api import (
@@ -35,7 +39,10 @@ class ActionHistoryMCPTools(BaseInstanaClient):
         """Initialize the Action History MCP tools client."""
         super().__init__(read_token=read_token, base_url=base_url)
 
-    @register_as_tool
+    @register_as_tool(
+        title="Submit Automation Action",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(ActionHistoryApi)
     async def submit_automation_action(self,
                                      payload: Union[Dict[str, Any], str],
@@ -168,7 +175,10 @@ class ActionHistoryMCPTools(BaseInstanaClient):
             logger.error(f"Error in submit_automation_action: {e}")
             return {"error": f"Failed to submit automation action: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Action Instance Details",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(ActionHistoryApi)
     async def get_action_instance_details(self,
                                         action_instance_id: str,
@@ -216,7 +226,10 @@ class ActionHistoryMCPTools(BaseInstanaClient):
             logger.error(f"Error in get_action_instance_details: {e}")
             return {"error": f"Failed to get action instance details: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="List Action Instances",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(ActionHistoryApi)
     async def list_action_instances(self,
                                   window_size: Optional[int] = None,
@@ -289,7 +302,10 @@ class ActionHistoryMCPTools(BaseInstanaClient):
             logger.error(f"Error in list_action_instances: {e}")
             return {"error": f"Failed to list action instances: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Delete Action Instance",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True)
+    )
     @with_header_auth(ActionHistoryApi)
     async def delete_action_instance(self,
                                    action_instance_id: str,

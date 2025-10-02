@@ -5,7 +5,6 @@ E2E tests for Application Analyze MCP Tools
 from unittest.mock import MagicMock, patch
 
 import pytest
-
 from mcp_instana.tools.application.application_analyze import ApplicationAnalyzeMCPTools
 
 
@@ -656,7 +655,9 @@ class TestApplicationAnalyzeE2E:
     async def test_get_grouped_calls_metrics_error_handling(self, instana_credentials):
         """Test error handling in get_grouped_calls_metrics."""
 
-        from mcp_instana.tools.application.application_analyze import ApplicationAnalyzeMCPTools
+        from mcp_instana.tools.application.application_analyze import (
+            ApplicationAnalyzeMCPTools,
+        )
         client = ApplicationAnalyzeMCPTools(
             read_token=instana_credentials["api_token"],
             base_url=instana_credentials["base_url"]

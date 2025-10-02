@@ -1,12 +1,12 @@
 from typing import Optional
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class ApplicationMetricsPrompts:
     """Class containing application metrics related prompts"""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_application_metrics(application_ids: Optional[list] = None, metrics: Optional[list] = None, time_frame: Optional[dict] = None, fill_time_series: Optional[bool] = None) -> str:
         """Retrieve metrics for specific applications including latency, error rates, etc., over a given time frame"""
@@ -18,7 +18,7 @@ class ApplicationMetricsPrompts:
         - Fill time series: {fill_time_series or 'None'}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_application_endpoints_metrics(application_ids: Optional[list] = None, metrics: Optional[list] = None, time_frame: Optional[dict] = None, order: Optional[dict] = None, pagination: Optional[dict] = None, filters: Optional[dict] = None, fill_time_series: Optional[bool] = None) -> str:
         """Retrieve metrics for endpoints within an application, such as latency, error rates, and call counts"""
@@ -33,7 +33,7 @@ class ApplicationMetricsPrompts:
         - Fill time series: {fill_time_series or 'None'}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_application_service_metrics(service_ids: list, metrics: Optional[list] = None, var_from: Optional[int] = None, to: Optional[int] = None, fill_time_series: Optional[bool] = None, include_snapshot_ids: Optional[bool] = None) -> str:
         """Fetch metrics over a specific time frame for specific services"""

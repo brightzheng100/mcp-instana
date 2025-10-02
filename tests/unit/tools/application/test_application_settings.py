@@ -135,6 +135,11 @@ class TestApplicationSettingsMCPTools(unittest.TestCase):
         # Create the client
         self.read_token = "test_token"
         self.base_url = "https://test.instana.io"
+
+        # Patch the with_header_auth decorator
+        self.patcher = patch('src.core.utils.with_header_auth', mock_with_header_auth)
+        self.patcher.start()
+
         self.client = ApplicationSettingsMCPTools(read_token=self.read_token, base_url=self.base_url)
 
         # Set up the client's API attribute
@@ -147,6 +152,8 @@ class TestApplicationSettingsMCPTools(unittest.TestCase):
 
     def tearDown(self):
         """Tear down test fixtures"""
+        # Stop the with_header_auth patcher
+        self.patcher.stop()
         # No need to stop patchers since we're directly mocking the module imports
         pass
 

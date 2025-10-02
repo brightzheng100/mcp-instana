@@ -1,12 +1,12 @@
 from typing import Optional, Union
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class WebsiteConfigurationPrompts:
     """Class containing website configuration related prompts"""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_websites() -> str:
         """Retrieve all configured websites in your Instana environment"""
@@ -14,7 +14,7 @@ class WebsiteConfigurationPrompts:
         Get all websites to see configured website monitoring setups.
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_website(website_id: str) -> str:
         """Retrieve configuration details for a specific website"""
@@ -23,7 +23,7 @@ class WebsiteConfigurationPrompts:
         - Website ID: {website_id}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def create_website(payload: Union[dict, str]) -> str:
         """Create a new website configuration in your Instana environment"""
@@ -32,7 +32,7 @@ class WebsiteConfigurationPrompts:
         - Payload: {payload}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def delete_website(website_id: str) -> str:
         """Delete a website configuration from your Instana environment"""
@@ -41,7 +41,7 @@ class WebsiteConfigurationPrompts:
         - Website ID: {website_id}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def rename_website(website_id: str, payload: Union[dict, str]) -> str:
         """Rename a website configuration in your Instana environment"""
@@ -51,7 +51,7 @@ class WebsiteConfigurationPrompts:
         - Rename payload: {payload}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_website_geo_location_configuration(website_id: str) -> str:
         """Retrieve geo-location configuration for a specific website"""
@@ -60,7 +60,7 @@ class WebsiteConfigurationPrompts:
         - Website ID: {website_id}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def update_website_geo_location_configuration(website_id: str, payload: Union[dict, str]) -> str:
         """Update geo-location configuration for a specific website"""
@@ -70,7 +70,7 @@ class WebsiteConfigurationPrompts:
         - Configuration payload: {payload}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_website_ip_masking_configuration(website_id: str) -> str:
         """Retrieve IP masking configuration for a specific website"""
@@ -79,7 +79,7 @@ class WebsiteConfigurationPrompts:
         - Website ID: {website_id}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def update_website_ip_masking_configuration(website_id: str, payload: Union[dict, str]) -> str:
         """Update IP masking configuration for a specific website"""

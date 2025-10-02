@@ -1,18 +1,18 @@
 from typing import Optional
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class InfrastructureResourcesPrompts:
     """Class containing infrastructure resources related prompts"""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_infrastructure_monitoring_state() -> str:
         """Get an overview of the current Instana monitoring state"""
         return "Get infrastructure monitoring state"
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_infrastructure_plugin_payload(
         snapshot_id: str,
@@ -29,7 +29,7 @@ class InfrastructureResourcesPrompts:
         - Window size: {window_size or '1 hour'}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_infrastructure_metrics_snapshot(
         snapshot_id: str,
@@ -44,7 +44,7 @@ class InfrastructureResourcesPrompts:
         - Window size: {window_size or '1 hour'}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def post_infrastructure_metrics_snapshot(
         snapshot_ids: list[str],

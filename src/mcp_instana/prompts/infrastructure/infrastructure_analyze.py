@@ -6,13 +6,13 @@ This module provides infrastructure analyze-specific MCP prompts for Instana mon
 
 from typing import Callable, Dict, List, Optional, Tuple
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class InfrastructureAnalyzePrompts:
     """Class containing prompts for infrastructure analysis in Instana."""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def infra_available_metrics(
         type: str,
@@ -30,7 +30,7 @@ class InfrastructureAnalyzePrompts:
         - Window size: {windowSize or 'None'}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def infra_get_entities(
         type: str,
@@ -46,7 +46,7 @@ class InfrastructureAnalyzePrompts:
         - To: {to or 'None'}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def infra_available_plugins(
         offline: bool,

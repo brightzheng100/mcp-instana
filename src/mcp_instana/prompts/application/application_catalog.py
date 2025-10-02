@@ -1,12 +1,12 @@
 from typing import Optional
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class ApplicationCatalogPrompts:
     """Class containing application catalog related prompts"""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def app_catalog_yesterday(limit: int, use_case: Optional[str] = None, data_source: Optional[str] = None, var_from: Optional[int] = None) -> str:
         """List 3 available application tag catalog data for yesterday"""

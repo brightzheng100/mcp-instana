@@ -81,7 +81,9 @@ sys.modules['instana_client.api.application_catalog_api'].ApplicationCatalogApi 
 # Patch the with_header_auth decorator
 with patch('mcp_instana.utils.with_header_auth', mock_with_header_auth):
     # Import the class to test
-    from mcp_instana.tools.application.application_catalog import ApplicationCatalogMCPTools
+    from mcp_instana.tools.application.application_catalog import (
+        ApplicationCatalogMCPTools,
+    )
 
 class TestApplicationCatalogMCPTools(unittest.TestCase):
     """Test the ApplicationCatalogMCPTools class"""

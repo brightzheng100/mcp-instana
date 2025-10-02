@@ -3,7 +3,9 @@ import unittest
 from unittest.mock import patch
 
 from mcp_instana.prompts import PROMPT_REGISTRY
-from mcp_instana.prompts.application.application_topology import ApplicationTopologyPrompts
+from mcp_instana.prompts.application.application_topology import (
+    ApplicationTopologyPrompts,
+)
 
 
 class TestApplicationTopologyPrompts(unittest.TestCase):

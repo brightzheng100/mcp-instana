@@ -11,6 +11,8 @@ import traceback
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional
 
+from mcp.types import ToolAnnotations
+
 from mcp_instana.utils import (
     BaseInstanaClient,
     register_as_tool,
@@ -38,7 +40,10 @@ class ApplicationCatalogMCPTools(BaseInstanaClient):
         """Initialize the Application Catalog MCP tools client."""
         super().__init__(read_token=read_token, base_url=base_url)
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Application Tag Catalog",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(ApplicationCatalogApi)
     async def get_application_tag_catalog(self,
                                           use_case: Optional[str] = None,
@@ -106,7 +111,10 @@ class ApplicationCatalogMCPTools(BaseInstanaClient):
             return {"error": f"Failed to get application catalog: {e!s}"}
 
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Application Metric Catalog",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(ApplicationCatalogApi)
     async def get_application_metric_catalog(self, ctx=None, api_client=None) -> Dict[str, Any]:
         """

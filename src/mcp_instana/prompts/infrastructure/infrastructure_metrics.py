@@ -6,13 +6,13 @@ This module provides infrastructure metrics-specific MCP prompts for Instana mon
 
 from typing import Callable, List, Optional, Tuple
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class InfrastructureMetricsPrompts:
     """Class containing prompts for infrastructure metrics in Instana."""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_infrastructure_metrics(
         offline: bool,

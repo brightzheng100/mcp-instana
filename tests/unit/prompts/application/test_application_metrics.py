@@ -3,7 +3,9 @@ import unittest
 from unittest.mock import patch
 
 from mcp_instana.prompts import PROMPT_REGISTRY
-from mcp_instana.prompts.application.application_metrics import ApplicationMetricsPrompts
+from mcp_instana.prompts.application.application_metrics import (
+    ApplicationMetricsPrompts,
+)
 
 
 class TestApplicationMetricsPrompts(unittest.TestCase):

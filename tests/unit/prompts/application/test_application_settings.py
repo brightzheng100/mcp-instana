@@ -3,7 +3,9 @@ import unittest
 from unittest.mock import patch
 
 from mcp_instana.prompts import PROMPT_REGISTRY
-from mcp_instana.prompts.application.application_settings import ApplicationSettingsPrompts
+from mcp_instana.prompts.application.application_settings import (
+    ApplicationSettingsPrompts,
+)
 
 
 class TestApplicationSettingsPrompts(unittest.TestCase):

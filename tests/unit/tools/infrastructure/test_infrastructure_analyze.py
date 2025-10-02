@@ -98,7 +98,9 @@ sys.modules['instana_client.models.get_infrastructure_groups_query'].GetInfrastr
 # Patch the with_header_auth decorator
 with patch('mcp_instana.utils.with_header_auth', mock_with_header_auth):
     # Import the class to test
-    from mcp_instana.tools.infrastructure.infrastructure_analyze import InfrastructureAnalyzeMCPTools
+    from mcp_instana.tools.infrastructure.infrastructure_analyze import (
+        InfrastructureAnalyzeMCPTools,
+    )
 
 class TestInfrastructureAnalyzeMCPTools(unittest.TestCase):
     """Test the InfrastructureAnalyzeMCPTools class"""

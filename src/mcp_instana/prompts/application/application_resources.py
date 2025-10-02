@@ -1,12 +1,12 @@
 from typing import Optional
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class ApplicationResourcesPrompts:
     """Class containing application resources related prompts"""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def application_insights_summary(window_size: int, to_time: int, name_filter: Optional[str] = None, application_boundary_scope: Optional[str] = None) -> str:
         """Retrieve a list of services within application perspectives from Instana"""

@@ -13,13 +13,16 @@ import traceback
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 
-logger = logging.getLogger(__name__)
+from mcp.types import ToolAnnotations
 
 from mcp_instana.utils import (
     BaseInstanaClient,
     register_as_tool,
     with_header_auth,
 )
+from src.core.utils import BaseInstanaClient, register_as_tool, with_header_auth
+
+logger = logging.getLogger(__name__)
 
 # Import the necessary classes from the SDK
 try:
@@ -72,7 +75,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             traceback.print_exc(file=sys.stderr)
             raise
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get All Applications Configs",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def get_all_applications_configs(self,
                              ctx=None,
@@ -89,24 +95,34 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
         """
         try:
             debug_print("Fetching all applications and their settings")
-            result = api_client.get_application_configs()
-            # Convert the result to a list of dictionaries
-            if isinstance(result, list):
-                result_dict = [item.to_dict() if hasattr(item, 'to_dict') else item for item in result]
-            elif hasattr(result, 'to_dict'):
-                result_dict = result.to_dict()
-            else:
-                result_dict = result
-
-            debug_print(f"Result from get_application_configs: {result_dict}")
-            return result_dict
+            # Use raw JSON response to avoid Pydantic validation issues
+            result = api_client.get_application_configs_without_preload_content()
+            import json
+            try:
+                response_text = result.data.decode('utf-8')
+                json_data = json.loads(response_text)
+                # Convert to List[Dict[str, Any]] format
+                if isinstance(json_data, list):
+                    result_dict = json_data
+                else:
+                    # If it's a single object, wrap it in a list
+                    result_dict = [json_data] if json_data else []
+                debug_print("Successfully retrieved application configs data")
+                return result_dict
+            except (json.JSONDecodeError, AttributeError) as json_err:
+                error_message = f"Failed to parse JSON response: {json_err}"
+                debug_print(error_message)
+                return [{"error": error_message}]
 
         except Exception as e:
             debug_print(f"Error in get_application_configs: {e}")
             traceback.print_exc(file=sys.stderr)
             return [{"error": f"Failed to get all applications: {e!s}"}]
 
-    @register_as_tool
+    @register_as_tool(
+        title="Add Application Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def add_application_config(self,
                                payload: Union[Dict[str, Any], str],
@@ -251,7 +267,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             logger.error(f"Error in add_application_config: {e}")
             return {"error": f"Failed to add new application config: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Delete Application Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def delete_application_config(self,
                                   id: str,
@@ -289,7 +308,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             traceback.print_exc(file=sys.stderr)
             return {"error": f"Failed to delete application configuration: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Application Config",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def get_application_config(self,
                                   id: str,
@@ -324,7 +346,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             traceback.print_exc(file=sys.stderr)
             return {"error": f"Failed to get application configuration: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Update Application Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def update_application_config(
         self,
@@ -477,7 +502,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             logger.error(f"Error in put_application_config: {e}")
             return {"error": f"Failed to update existing application config: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get All Endpoint Configs",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def get_all_endpoint_configs(self,
                              ctx=None,
@@ -509,7 +537,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             traceback.print_exc(file=sys.stderr)
             return [{"error": f"Failed to get endpoint configs: {e!s}"}]
 
-    @register_as_tool
+    @register_as_tool(
+        title="Create Endpoint Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def create_endpoint_config(
         self,
@@ -611,7 +642,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             logger.error(f"Error in create_endpoint_config: {e}")
             return {"error": f"Failed to create new endpoint config: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Delete Endpoint Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def delete_endpoint_config(
         self,
@@ -649,7 +683,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             traceback.print_exc(file=sys.stderr)
             return {"error": f"Failed to delete endpoint configs: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Endpoint Config",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def get_endpoint_config(
         self,
@@ -689,7 +726,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             traceback.print_exc(file=sys.stderr)
             return {"error": f"Failed to get endpoint configs: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Update Endpoint Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def update_endpoint_config(
         self,
@@ -815,7 +855,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             return {"error": f"Failed to update existing application config: {e!s}"}
 
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get All Manual Service Configs",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def get_all_manual_service_configs(self,
                              ctx=None,
@@ -847,7 +890,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             traceback.print_exc(file=sys.stderr)
             return [{"error": f"Failed to get manual service configs: {e!s}"}]
 
-    @register_as_tool
+    @register_as_tool(
+        title="Add Manual Service Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def add_manual_service_config(
         self,
@@ -964,7 +1010,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             logger.error(f"Error in add_manual_service_config: {e}")
             return {"error": f"Failed to create new manual service config: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Delete Manual Service Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def delete_manual_service_config(
         self,
@@ -1002,7 +1051,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             traceback.print_exc(file=sys.stderr)
             return {"error": f"Failed to delete manual service configs: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Update Manual Service Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def update_manual_service_config(
         self,
@@ -1126,7 +1178,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             return {"error": f"Failed to update manual config: {e!s}"}
 
 
-    @register_as_tool
+    @register_as_tool(
+        title="Replace All Manual Service Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def replace_all_manual_service_config(
         self,
@@ -1248,7 +1303,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             logger.error(f"Error in replace_all_manual_service_config: {e}")
             return [{"error": f"Failed to replace all manual config: {e!s}"}]
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get All Service Configs",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def get_all_service_configs(self,
                              ctx=None,
@@ -1280,7 +1338,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             traceback.print_exc(file=sys.stderr)
             return [{"error": f"Failed to get application data metrics: {e}"}]
 
-    @register_as_tool
+    @register_as_tool(
+        title="Add Service Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def add_service_config(self,
                             payload: Union[Dict[str, Any], str],
@@ -1392,7 +1453,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             logger.error(f"Error in add_service_config: {e}")
             return {"error": f"Failed to add service config: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Replace All Service Configs",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def replace_all_service_configs(self,
                             payload: Union[Dict[str, Any], str],
@@ -1502,7 +1566,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             return [{"error": f"Failed to replace all service config: {e!s}"}]
 
 
-    @register_as_tool
+    @register_as_tool(
+        title="Order Service Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def order_service_config(self,
                                    request_body: List[str],
@@ -1541,7 +1608,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             traceback.print_exc(file=sys.stderr)
             return {"error": f"Failed to order service configs: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Delete Service Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=True)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def delete_service_config(self,
                                 id: str,
@@ -1579,7 +1649,10 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             traceback.print_exc(file=sys.stderr)
             return {"error": f"Failed to delete service configuration: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Service Config",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def get_service_config(
         self,
@@ -1619,13 +1692,16 @@ class ApplicationSettingsMCPTools(BaseInstanaClient):
             traceback.print_exc(file=sys.stderr)
             return {"error": f"Failed to get service config: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Update Service Config",
+        annotations=ToolAnnotations(readOnlyHint=False, destructiveHint=False)
+    )
     @with_header_auth(ApplicationSettingsApi)
     async def update_service_config(self,
                             id: str,
                             payload: Union[Dict[str, Any], str],
                             ctx=None,
-                            api_client=None) -> Dict[str, Any]:
+                            api_client=None) -> Union[Dict[str, Any], List[Dict[str, Any]]]:
         """
         This tool gives is used if one wants to update a particular custom service rule.
         Args:

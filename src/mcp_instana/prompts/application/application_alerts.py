@@ -1,13 +1,13 @@
 from typing import Optional
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class ApplicationAlertsPrompts:
     """Class containing application alerts related prompts"""
 
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def app_alerts_list(from_time: Optional[int]=None, to_time: Optional[int]=None, name_filter: Optional[str] = None, severity: Optional[str] = None) -> str:
         """List all application alerts in Instana server"""
@@ -19,7 +19,7 @@ class ApplicationAlertsPrompts:
         """
 
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def app_alert_details(alert_ids: Optional[list] = None, application_id: Optional[str] = None) -> str:
         """Get Smart Alert Configurations details for a specific application"""
@@ -30,14 +30,14 @@ class ApplicationAlertsPrompts:
         """
 
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def app_alert_config_delete(id: str) -> str:
         """Delete a Smart Alert Configuration by ID"""
         return f"Delete alert configuration with ID: {id}"
 
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def app_alert_config_enable(id: str) -> str:
         """Enable a Smart Alert Configuration by ID"""

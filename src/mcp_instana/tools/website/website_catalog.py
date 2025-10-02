@@ -16,6 +16,8 @@ except ImportError as e:
     logger.error(f"Error importing Instana SDK: {e}", exc_info=True)
     raise
 
+from mcp.types import ToolAnnotations
+
 from mcp_instana.utils import (
     BaseInstanaClient,
     register_as_tool,
@@ -32,7 +34,10 @@ class WebsiteCatalogMCPTools(BaseInstanaClient):
         """Initialize the Website Catalog MCP tools client."""
         super().__init__(read_token=read_token, base_url=base_url)
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Website Catalog Metrics",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(WebsiteCatalogApi)
     async def get_website_catalog_metrics(self, ctx=None, api_client=None) -> Dict[str, Any]:
         """
@@ -80,7 +85,10 @@ class WebsiteCatalogMCPTools(BaseInstanaClient):
             logger.error(f"Error in get_website_catalog_metrics: {e}", exc_info=True)
             return {"error": f"Failed to get website catalog metrics: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Website Catalog Tags",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(WebsiteCatalogApi)
     async def get_website_catalog_tags(self, ctx=None, api_client=None) -> Dict[str, Any]:
         """
@@ -128,7 +136,10 @@ class WebsiteCatalogMCPTools(BaseInstanaClient):
             logger.error(f"Error in get_website_catalog_tags: {e}", exc_info=True)
             return {"error": f"Failed to get website catalog tags: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Website Tag Catalog",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(WebsiteCatalogApi)
     async def get_website_tag_catalog(self,
                                     beacon_type: str,

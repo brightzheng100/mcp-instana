@@ -3,7 +3,9 @@ import unittest
 from unittest.mock import patch
 
 from mcp_instana.prompts import PROMPT_REGISTRY
-from mcp_instana.prompts.application.application_resources import ApplicationResourcesPrompts
+from mcp_instana.prompts.application.application_resources import (
+    ApplicationResourcesPrompts,
+)
 
 
 class TestApplicationResourcesPrompts(unittest.TestCase):

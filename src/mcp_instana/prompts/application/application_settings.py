@@ -1,42 +1,42 @@
 from typing import Optional
 
-from mcp_instana.prompts import auto_register_prompt
+from mcp_instana.server import mcp
 
 
 class ApplicationSettingsPrompts:
     """Class containing application settings related prompts"""
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_all_applications_configs() -> str:
         """Get a list of all Application Perspectives with their configuration settings"""
         return "Retrieve all application configurations"
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_application_config(id: str) -> str:
         """Get an Application Perspective configuration by ID"""
         return f"Retrieve application configuration with ID: {id}"
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_all_endpoint_configs() -> str:
         """Get a list of all Endpoint Perspectives with their configuration settings"""
         return "Retrieve all endpoint configurations"
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_endpoint_config(id: str) -> str:
         """Retrieve the endpoint configuration of a service"""
         return f"Get endpoint configuration with ID: {id}"
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_all_manual_service_configs() -> str:
         """Get a list of all Manual Service Perspectives with their configuration settings"""
         return "Retrieve all manual service configurations"
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def add_manual_service_config(
         enabled: bool,
@@ -55,7 +55,7 @@ class ApplicationSettingsPrompts:
         - Enabled: {enabled or 'True'}
         """
 
-    @auto_register_prompt
+    @mcp.prompt
     @staticmethod
     def get_service_config(id: str) -> str:
         """Retrieve the particular custom service configuration"""

@@ -33,6 +33,8 @@ except ImportError as e:
     logger.error(f"Error importing Instana SDK: {e}", exc_info=True)
     raise
 
+from mcp.types import ToolAnnotations
+
 from mcp_instana.utils import (
     BaseInstanaClient,
     register_as_tool,
@@ -54,7 +56,10 @@ class InfrastructureAnalyzeMCPTools(BaseInstanaClient):
         """Initialize the Infrastructure Analyze MCP tools client."""
         super().__init__(read_token=read_token, base_url=base_url)
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Available Metrics",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(InfrastructureAnalyzeApi)
     async def get_available_metrics(self,
                                     payload: Optional[Union[Dict[str, Any], str]] = None,
@@ -190,7 +195,10 @@ class InfrastructureAnalyzeMCPTools(BaseInstanaClient):
             logger.error(f"Error in get_available_metrics: {e}", exc_info=True)
             return {"error": f"Failed to get available metrics: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Entities",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(InfrastructureAnalyzeApi)
     async def get_entities(self,
                            payload: Optional[Union[Dict[str, Any], str]] = None,
@@ -305,7 +313,10 @@ class InfrastructureAnalyzeMCPTools(BaseInstanaClient):
             logger.error(f"Error in get_entities: {e}", exc_info=True)
             return {"error": f"Failed to get entities: {e!s}"}
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Aggregated Entity Groups",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(InfrastructureAnalyzeApi)
     async def get_aggregated_entity_groups(self,
                                            payload: Optional[Union[Dict[str, Any], str]] = None,
@@ -506,7 +517,10 @@ class InfrastructureAnalyzeMCPTools(BaseInstanaClient):
                 "error": f"Failed to summarize results: {e!s}"
             }
 
-    @register_as_tool
+    @register_as_tool(
+        title="Get Available Plugins",
+        annotations=ToolAnnotations(readOnlyHint=True, destructiveHint=False)
+    )
     @with_header_auth(InfrastructureAnalyzeApi)
     async def get_available_plugins(self,
                                     payload: Optional[Union[Dict[str, Any], str]] = None,

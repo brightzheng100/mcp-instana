@@ -6,8 +6,8 @@ import json
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest  #type: ignore
-
 from mcp_instana.tools.application.application_metrics import ApplicationMetricsMCPTools
+
 from src.core.server import MCPState, execute_tool
 
 
