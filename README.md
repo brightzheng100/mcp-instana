@@ -77,7 +77,7 @@
 
 The Instana MCP server enables seamless interaction with the Instana observability platform, allowing you to access real-time observability data directly within your development workflow.
 
-It serves as a bridge between clients (such as AI agents or custom tools) and the Instana REST APIs, converting user queries into Instana API requests and formatting the responses into structured, easily consumable formats.
+It serves as a bridge between MCP Host (such as AI agents or custom tools like Claude Desktop, Visual Studio Code) and the Instana REST APIs, converting user queries into Instana API requests and formatting the responses into structured, easily consumable contents to streamline the interactions.
 
 The server supports both **Streamable HTTP** and **Stdio** transport modes for maximum compatibility with different MCP clients. For more details, refer to the [MCP Transport Modes specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports).
 
@@ -225,7 +225,7 @@ mcp-instana [OPTIONS]
 For local development, use the `uv run` command:
 
 ```bash
-uv run src/core/server.py [OPTIONS]
+uv run src/mcp_instana/main.py [OPTIONS]
 ```
 
 **Available Options:**
@@ -264,19 +264,19 @@ mcp-instana --transport streamable-http --log-level DEBUG --tools app,events
 
 ```bash
 # Start with all tools enabled (default)
-uv run src/core/server.py --transport streamable-http
+uv run src/mcp_instana/main.py --transport streamable-http
 
 # Start with debug logging
-uv run src/core/server.py --transport streamable-http --debug
+uv run src/mcp_instana/main.py --transport streamable-http --debug
 
 # Start with a specific log level
-uv run src/core/server.py --transport streamable-http --log-level WARNING
+uv run src/mcp_instana/main.py --transport streamable-http --log-level WARNING
 
 # Start with specific tool and prompts categories only
-uv run src/core/server.py --transport streamable-http --tools infra,events
+uv run src/mcp_instana/main.py --transport streamable-http --tools infra,events
 
 # Combine options (specific log level, custom tools and prompts)
-uv run src/core/server.py --transport streamable-http --log-level DEBUG --tools app,events
+uv run src/mcp_instana/main.py --transport streamable-http --log-level DEBUG --tools app,events
 ```
 
 **Key Features of Streamable HTTP Mode:**
@@ -312,10 +312,10 @@ export INSTANA_BASE_URL="https://your-instana-instance.instana.io"
 export INSTANA_API_TOKEN="your_instana_api_token"
 
 # Start the server (stdio is the default if no transport specified)
-uv run src/core/server.py
+uv run src/mcp_instana/main.py
 
 # Or explicitly specify stdio mode
-uv run src/core/server.py --transport stdio
+uv run src/mcp_instana/main.py --transport stdio
 ```
 
 **Key Features of Stdio Mode:**
@@ -325,14 +325,11 @@ uv run src/core/server.py --transport stdio
 
 ### Tool Categories
 
-You can optimize server performance by enabling only the tools and prompts categories you need:
+You can enable only the tools and prompts categories you need:
 
 #### Using CLI (PyPI Installation)
 
 ```bash
-# List all available categories
-mcp-instana --list-tools
-
 # Enable specific categories
 mcp-instana --transport streamable-http --tools infra,app
 mcp-instana --transport streamable-http --tools events
@@ -341,12 +338,9 @@ mcp-instana --transport streamable-http --tools events
 #### Using Development Installation
 
 ```bash
-# List all available categories
-uv run src/core/server.py --list-tools
-
 # Enable specific categories
-uv run src/core/server.py --transport streamable-http --tools infra,app
-uv run src/core/server.py --transport streamable-http --tools events
+uv run src/mcp_instana/main.py --transport streamable-http --tools infra,app
+uv run src/mcp_instana/main.py --transport streamable-http --tools events
 ```
 
 **Available Categories:**
@@ -384,7 +378,7 @@ If you encounter SSL certificate errors, ensure your Python environment has acce
 **Port Already in Use:**
 If port 8080 is already in use, specify a different port:
 ```bash
-uv run src/core/server.py --transport streamable-http --port 9000
+uv run src/mcp_instana/main.py --transport streamable-http --port 9000
 ```
 
 **Missing Dependencies:**
@@ -481,7 +475,7 @@ get me all endpoints from Instana
         "--directory",
         "<path-to-mcp-instana-folder>",
         "run",
-        "src/core/server.py"
+        "src/mcp_instana/main.py"
       ],
       "env": {
         "INSTANA_BASE_URL": "https://your-instana-instance.instana.io",
@@ -572,7 +566,7 @@ Create `.vscode/mcp.json` in your project root:
         "--directory",
         "/absolute/path/to/your/project/mcp-instana",
         "run",
-        "src/core/server.py"
+        "src/mcp_instana/main.py"
       ],
       "env": {
         "INSTANA_BASE_URL": "https://your-instana-instance.instana.io",
@@ -754,39 +748,33 @@ The MCP server supports selective tool loading to optimize performance and reduc
 #### Using CLI (PyPI Installation)
 
 ```bash
+# Default: all tools are enabled, with stdio transport mode
+mcp-instana
+
 # Enable only infrastructure and events tools
+mcp-instana --tools infra,events
+
+# Enable only infrastructure and events tools, with streamable-http transport mode
 mcp-instana --tools infra,events --transport streamable-http
 
-# Enable only application tools
-mcp-instana --tools app --transport streamable-http
-
-# Enable automation and website tools
-mcp-instana --tools automation,website --transport streamable-http
-
-# Enable all tools (default behavior)
+# Enable all tools, with streamable-http transport mode
 mcp-instana --transport streamable-http
-
-# List all available tool categories and their tools
-mcp-instana --list-tools
 ```
 
 #### Using Development Installation
 
 ```bash
+# Default: all tools are enabled, with stdio transport mode
+uv run src/mcp_instana/main.py
+
 # Enable only infrastructure and events tools
-uv run src/core/server.py --tools infra,events --transport streamable-http
+uv run src/mcp_instana/main.py --tools infra,events
 
-# Enable only application tools
-uv run src/core/server.py --tools app --transport streamable-http
+# Enable only infrastructure and events tools, with streamable-http transport mode
+uv run src/mcp_instana/main.py --tools infra,events --transport streamable-http
 
-# Enable automation and website tools
-uv run src/core/server.py --tools automation,website --transport streamable-http
-
-# Enable all tools (default behavior)
-uv run src/core/server.py --transport streamable-http
-
-# List all available tool categories and their tools
-uv run src/core/server.py --list-tools
+# Enable all tools, with streamable-http transport mode
+uv run src/mcp_instana/main.py --transport streamable-http
 ```
 
 ### Benefits of Tool Filtering
