@@ -59,7 +59,7 @@ dev = [
 
 
 [project.scripts]
-mcp-instana = "mcp_instana.server:main"
+mcp-instana = "mcp_instana.main:main"
 
 [tool.ruff]
 # Target Python 3.10
