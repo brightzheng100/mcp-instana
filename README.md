@@ -759,6 +759,15 @@ mcp-instana --tools infra,events --transport streamable-http
 
 # Enable all tools, with streamable-http transport mode
 mcp-instana --transport streamable-http
+
+# Enable all tools, with streamable-http transport mode, and a custom logging level instead of INFO
+# Available log level options: ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+mcp-instana --transport streamable-http --log-level DEBUG
+# Such --log-level DEBUG can be simplified as --debug too, so below command is identical as above
+mcp-instana --transport streamable-http --debug
+
+# Enable all tools, with streamable-http transport mode, and a custom port instead of default 8080
+mcp-instana --transport streamable-http --port 8888
 ```
 
 #### Using Development Installation
@@ -775,6 +784,15 @@ uv run src/mcp_instana/main.py --tools infra,events --transport streamable-http
 
 # Enable all tools, with streamable-http transport mode
 uv run src/mcp_instana/main.py --transport streamable-http
+
+# Enable all tools, with streamable-http transport mode, and a custom logging level instead of INFO
+# Available log level options: ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+uv run src/mcp_instana/main.py --transport streamable-http --log-level DEBUG
+# Such --log-level DEBUG can be simplified as --debug too, so below command is identical as above
+uv run src/mcp_instana/main.py --transport streamable-http --debug
+
+# Enable all tools, with streamable-http transport mode, and a custom port instead of default 8080
+uv run src/mcp_instana/main.py --transport streamable-http --port 8888
 ```
 
 ### Benefits of Tool Filtering

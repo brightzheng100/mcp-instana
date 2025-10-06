@@ -47,7 +47,7 @@ def set_log_level(level_name):
     level = level_map.get(level_name.upper(), logging.INFO)
     logger.setLevel(level)
     logging.getLogger().setLevel(level)
-    logger.info(f"Log level set to {level_name.upper()}")
+    logger.debug(f"Log level set to {level_name.upper()}")
 
 def validate_credentials() -> bool:
     """Validate that Instana credentials are provided for stdio mode."""
