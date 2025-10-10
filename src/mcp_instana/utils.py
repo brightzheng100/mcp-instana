@@ -6,17 +6,44 @@ This module provides the base client for interacting with the Instana API.
 
 import os
 import sys
+from contextlib import contextmanager
+from datetime import datetime, timedelta, timezone
 from functools import wraps
 from typing import Any, Callable, Dict, Union
 
+import instana_client
 import requests
-from fastmcp import FastMCP
+from fastmcp import Context, FastMCP
+from instana_client.configuration import Configuration
 
 # Import MCP dependencies
 from mcp.types import ToolAnnotations
 
+from mcp_instana import settings
+
 # Registry to store all tools
 MCP_TOOLS = {}
+
+
+@contextmanager
+def instana_api_client_instance():
+    # Retrieve Instana credentials
+    token, base_url = get_instana_credentials()
+    # Create API client
+    configuration = Configuration()
+    configuration.host = base_url
+    configuration.api_key["ApiKeyAuth"] = token
+    configuration.api_key_prefix["ApiKeyAuth"] = "apiToken"
+    configuration.default_headers = {"User-Agent": "MCP-server/0.1.0"}
+    try:
+        api_client = instana_client.ApiClient(configuration)  # pyright: ignore[reportPrivateImportUsage]
+        api_instance = instana_client.ApplicationMetricsApi(api_client)  # pyright: ignore[reportPrivateImportUsage]
+
+        yield api_instance  # Yield the acquired resource to the 'with' block
+    finally:
+        # TODO: Release resource if needed
+        pass
+
 
 def register_as_tool(title=None, annotations=None):
     """
@@ -26,17 +53,17 @@ def register_as_tool(title=None, annotations=None):
         title: Title for the MCP tool (optional, defaults to function name)
         annotations: ToolAnnotations for the MCP tool (optional)
     """
+
     def decorator(func):
         # Get function metadata
         func_name = func.__name__
 
         # Use provided title or generate from function name
-        tool_title = title or func_name.replace('_', ' ').title()
+        tool_title = title or func_name.replace("_", " ").title()
 
         # Use provided annotations or default
         tool_annotations = annotations or ToolAnnotations(
-            readOnlyHint=True,
-            destructiveHint=False
+            readOnlyHint=True, destructiveHint=False
         )
 
         # Store the metadata for later use by the server
@@ -50,13 +77,24 @@ def register_as_tool(title=None, annotations=None):
 
     return decorator
 
+
 def get_instana_credentials():
-    """Get Instana credentials from environment variables for stdio mode."""
-    # For stdio mode, use INSTANA_API_TOKEN and INSTANA_BASE_URL
-    token = (os.getenv("INSTANA_API_TOKEN") or "")
-    base_url = (os.getenv("INSTANA_BASE_URL") or "")
+    """Get Instana credentials."""
+
+    if settings.global_mcp_mode == "stdio" or settings.global_mcp_mode is None:
+        # For stdio mode, use INSTANA_API_TOKEN and INSTANA_BASE_URL
+        token = os.getenv("INSTANA_API_TOKEN") or ""
+        base_url = os.getenv("INSTANA_BASE_URL") or ""
+    else:
+        # For HTTP mode, credentials should be provided via headers
+        from fastmcp.server.dependencies import get_http_headers
+
+        headers = get_http_headers()
+        token = headers.get("instana-api-token") or ""
+        base_url = headers.get("instana-base-url") or ""
 
     return token, base_url
+
 
 def with_header_auth(api_class, allow_mock=True):
     """
@@ -86,12 +124,17 @@ def with_header_auth(api_class, allow_mock=True):
     Note: Always include 'api_client=None' in your method signature to receive the
     injected API client from the decorator.
     """
+
     def decorator(func: Callable) -> Callable:
         @wraps(func)
         async def wrapper(self, *args, **kwargs):
             try:
                 # Check if a mock client is being passed (for testing)
-                if allow_mock and 'api_client' in kwargs and kwargs['api_client'] is not None:
+                if (
+                    allow_mock
+                    and "api_client" in kwargs
+                    and kwargs["api_client"] is not None
+                ):
                     print(" Using mock client for testing", file=sys.stderr)
                     # Call the original function with the mock client
                     return await func(self, *args, **kwargs)
@@ -99,6 +142,7 @@ def with_header_auth(api_class, allow_mock=True):
                 # Try to get headers first to determine mode
                 try:
                     from fastmcp.server.dependencies import get_http_headers
+
                     headers = get_http_headers()
 
                     instana_token = headers.get("instana-api-token")
@@ -118,39 +162,59 @@ def with_header_auth(api_class, allow_mock=True):
                             return {"error": error_msg}
 
                         # Validate URL format
-                        if not instana_base_url.startswith("http://") and not instana_base_url.startswith("https://"):
-                            error_msg = "Instana base URL must start with http:// or https://"
+                        if not instana_base_url.startswith(
+                            "http://"
+                        ) and not instana_base_url.startswith("https://"):
+                            error_msg = (
+                                "Instana base URL must start with http:// or https://"
+                            )
                             print(f" {error_msg}", file=sys.stderr)
                             return {"error": error_msg}
 
-                        print(" Using header-based authentication (HTTP mode)", file=sys.stderr)
+                        print(
+                            " Using header-based authentication (HTTP mode)",
+                            file=sys.stderr,
+                        )
                         print(" instana_base_url: ", instana_base_url)
 
                         # Import SDK components
-                        from instana_client.api_client import ApiClient
+                        from instana_client.api_client import (
+                            ApiClient,
+                            ApplicationMetricsApi,
+                        )
                         from instana_client.configuration import Configuration
 
                         # Create API client from headers
                         configuration = Configuration()
                         configuration.host = instana_base_url
-                        configuration.api_key['ApiKeyAuth'] = instana_token
-                        configuration.api_key_prefix['ApiKeyAuth'] = 'apiToken'
-                        configuration.default_headers = {"User-Agent": "MCP-server/0.1.0"}
+                        configuration.api_key["ApiKeyAuth"] = instana_token
+                        configuration.api_key_prefix["ApiKeyAuth"] = "apiToken"
+                        configuration.default_headers = {
+                            "User-Agent": "MCP-server/0.1.0"
+                        }
 
                         api_client_instance = ApiClient(configuration=configuration)
-                        api_instance = api_class(api_client=api_client_instance)
+                        api_instance = ApplicationMetricsApi(
+                            api_client=api_client_instance
+                        )
 
                         # Add the API instance to kwargs so the decorated function can use it
-                        kwargs['api_client'] = api_instance
+                        kwargs["api_client"] = api_instance
 
                         # Call the original function
                         return await func(self, *args, **kwargs)
 
                 except (ImportError, AttributeError) as e:
-                    print(f"Header detection failed, using STDIO mode: {e}", file=sys.stderr)
+                    print(
+                        f"Header detection failed, using STDIO mode: {e}",
+                        file=sys.stderr,
+                    )
 
                 # STDIO mode - use constructor-based authentication
-                print(" Using constructor-based authentication (STDIO mode)", file=sys.stderr)
+                print(
+                    " Using constructor-based authentication (STDIO mode)",
+                    file=sys.stderr,
+                )
                 print(f" self.base_url: {self.base_url}", file=sys.stderr)
 
                 # Validate constructor credentials before proceeding
@@ -166,39 +230,49 @@ def with_header_auth(api_class, allow_mock=True):
                 # Check if the class has the expected API attribute
                 api_attr_name = None
                 for attr_name in dir(self):
-                    if attr_name.endswith('_api'):
+                    if attr_name.endswith("_api"):
                         attr = getattr(self, attr_name)
-                        if hasattr(attr, '__class__') and attr.__class__.__name__ == api_class.__name__:
+                        if (
+                            hasattr(attr, "__class__")
+                            and attr.__class__.__name__ == api_class.__name__
+                        ):
                             api_attr_name = attr_name
-                            print(f"🔐 Found existing API client: {attr_name}", file=sys.stderr)
+                            print(
+                                f"🔐 Found existing API client: {attr_name}",
+                                file=sys.stderr,
+                            )
                             break
 
                 if api_attr_name:
                     # Use the existing API client from constructor
                     api_instance = getattr(self, api_attr_name)
-                    kwargs['api_client'] = api_instance
+                    kwargs["api_client"] = api_instance
                     return await func(self, *args, **kwargs)
                 else:
                     # Create a new API client using constructor credentials
-                    print(" Creating new API client with constructor credentials", file=sys.stderr)
+                    print(
+                        " Creating new API client with constructor credentials",
+                        file=sys.stderr,
+                    )
                     from instana_client.api_client import ApiClient
                     from instana_client.configuration import Configuration
 
                     configuration = Configuration()
                     configuration.host = self.base_url
-                    configuration.api_key['ApiKeyAuth'] = self.read_token
-                    configuration.api_key_prefix['ApiKeyAuth'] = 'apiToken'
+                    configuration.api_key["ApiKeyAuth"] = self.read_token
+                    configuration.api_key_prefix["ApiKeyAuth"] = "apiToken"
                     configuration.default_headers = {"User-Agent": "MCP-server/0.1.0"}
 
                     api_client_instance = ApiClient(configuration=configuration)
                     api_instance = api_class(api_client=api_client_instance)
 
-                    kwargs['api_client'] = api_instance
+                    kwargs["api_client"] = api_instance
                     return await func(self, *args, **kwargs)
 
             except Exception as e:
                 print(f"Error in header auth decorator: {e}", file=sys.stderr)
                 import traceback
+
                 traceback.print_exc(file=sys.stderr)
                 # Handle the specific case where e might be a string
                 if isinstance(e, str):
@@ -208,13 +282,21 @@ def with_header_auth(api_class, allow_mock=True):
                 return {"error": error_msg}
 
         return wrapper
+
     return decorator
 
+
 # TODO: to remove the dummy function after refactoring the e2e tests
-def create_app(token: str, base_url: str, port: int = int(os.getenv("PORT", "8080")), enabled_categories: str = "all") -> tuple[FastMCP, int]:
+def create_app(
+    token: str,
+    base_url: str,
+    port: int = int(os.getenv("PORT", "8080")),
+    enabled_categories: str = "all",
+) -> tuple[FastMCP, int]:
     """Create and configure the MCP server with the given credentials."""
     server = FastMCP(name="Instana MCP Server", host="0.0.0.0", port=port)
     return server, 0
+
 
 class BaseInstanaClient:
     """Base client for Instana API with common functionality."""
@@ -228,10 +310,16 @@ class BaseInstanaClient:
         return {
             "Authorization": f"apiToken {self.read_token}",
             "Content-Type": "application/json",
-            "Accept": "application/json"
+            "Accept": "application/json",
         }
 
-    async def make_request(self, endpoint: str, params: Union[Dict[str, Any], None] = None, method: str = "GET", json: Union[Dict[str, Any], None] = None) -> Dict[str, Any]:
+    async def make_request(
+        self,
+        endpoint: str,
+        params: Union[Dict[str, Any], None] = None,
+        method: str = "GET",
+        json: Union[Dict[str, Any], None] = None,
+    ) -> Dict[str, Any]:
         """Make a request to the Instana API."""
         if endpoint is None:
             return {"error": "Endpoint cannot be None"}
@@ -240,16 +328,24 @@ class BaseInstanaClient:
 
         try:
             if method.upper() == "GET":
-                response = requests.get(url, headers=headers, params=params, verify=False)
+                response = requests.get(
+                    url, headers=headers, params=params, verify=False
+                )
             elif method.upper() == "POST":
                 # Use the json parameter if provided, otherwise use params
                 data_to_send = json if json is not None else params
-                response = requests.post(url, headers=headers, json=data_to_send, verify=False)
+                response = requests.post(
+                    url, headers=headers, json=data_to_send, verify=False
+                )
             elif method.upper() == "PUT":
                 data_to_send = json if json is not None else params
-                response = requests.put(url, headers=headers, json=data_to_send, verify=False)
+                response = requests.put(
+                    url, headers=headers, json=data_to_send, verify=False
+                )
             elif method.upper() == "DELETE":
-                response = requests.delete(url, headers=headers, params=params, verify=False)
+                response = requests.delete(
+                    url, headers=headers, params=params, verify=False
+                )
             else:
                 return {"error": f"Unsupported HTTP method: {method}"}
 

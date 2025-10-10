@@ -12,7 +12,8 @@ authors = [
     {name = "Isabell Sippli", email = "ischwert@de.ibm.com"},
     {name = "Jay Sharma", email = "Jay.Sharma3@ibm.com"},
     {name = "Madhu Tadiparthi", email = "madhu.tadiparthi@ibm.com"},
-    {name = "Riya Kumari", email = "Riya.Kumari3@ibm.com"}
+    {name = "Riya Kumari", email = "Riya.Kumari3@ibm.com"},
+    {name = "Bright Zheng", email = "Bright.Zheng@ibm.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.10"
