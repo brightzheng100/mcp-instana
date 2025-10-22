@@ -230,11 +230,8 @@ uv run src/mcp_instana/main.py [OPTIONS]
 
 **Available Options:**
 - `--transport <mode>`: Transport mode (choices: `streamable-http`, `stdio`)
-- `--debug`: Enable debug mode with additional logging
-- `--log-level <level>`: Set the logging level (choices: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`)
+- `--port <port>`: Port to listen on when in `streamable-http` transport mode (default: `8080`)
 - `--tools <categories>`: Comma-separated list of tool categories to enable (e.g., infra,app,events,automation,website). Enabling a category will also enable its related prompts. For example: `--tools infra` enables the infra tools and all infra-related prompts.
-- `--list-tools`: List all available tool categories and exit
-- `--port <port>`: Port to listen on (default: 8080)
 - `--help`: Show help message and exit
 
 ### Starting in Streamable HTTP Mode
@@ -244,39 +241,33 @@ uv run src/mcp_instana/main.py [OPTIONS]
 #### Using CLI (PyPI Installation)
 
 ```bash
-# Start with all tools enabled (default)
+# Default, start with "stdio" transport mode, with all tools enabled
+mcp-instana
+
+# Start with "streamable-http" transport mode which listens on default port 8080, with all tools enabled
 mcp-instana --transport streamable-http
 
-# Start with debug logging
-mcp-instana --transport streamable-http --debug
+# Start with "streamable-http" transport mode at a custom port 8000, with all tools enabled
+mcp-instana --transport streamable-http --port 8000
 
-# Start with a specific log level
-mcp-instana --transport streamable-http --log-level WARNING
-
-# Start with specific tool categories only
-mcp-instana --transport streamable-http --tools infra,events
-
-# Combine options (specific log level, custom tools)
-mcp-instana --transport streamable-http --log-level DEBUG --tools app,events
+# Start with "streamable-http" transport mode, with specific tool categories only
+mcp-instana --transport streamable-http --tools trending,infra,events
 ```
 
 #### Using Development Installation
 
 ```bash
-# Start with all tools enabled (default)
+# Default, start with "stdio" transport mode, with all tools enabled
+uv run src/mcp_instana/main.py
+
+# Start with "streamable-http" transport mode which listens on default port 8080, with all tools enabled
 uv run src/mcp_instana/main.py --transport streamable-http
 
-# Start with debug logging
-uv run src/mcp_instana/main.py --transport streamable-http --debug
+# Start with "streamable-http" transport mode at a custom port 8000, with all tools enabled
+uv run src/mcp_instana/main.py --transport streamable-http --port 8000
 
-# Start with a specific log level
-uv run src/mcp_instana/main.py --transport streamable-http --log-level WARNING
-
-# Start with specific tool and prompts categories only
-uv run src/mcp_instana/main.py --transport streamable-http --tools infra,events
-
-# Combine options (specific log level, custom tools and prompts)
-uv run src/mcp_instana/main.py --transport streamable-http --log-level DEBUG --tools app,events
+# Start with "streamable-http" transport mode, with specific tool categories only
+uv run src/mcp_instana/main.py --transport streamable-http --tools trending,infra,events
 ```
 
 **Key Features of Streamable HTTP Mode:**
@@ -295,7 +286,7 @@ uv run src/mcp_instana/main.py --transport streamable-http --log-level DEBUG --t
 ```bash
 # Set environment variables first
 export INSTANA_BASE_URL="https://your-instana-instance.instana.io"
-export INSTANA_API_TOKEN="your_instana_api_token"
+export INSTANA_API_TOKEN="<your_instana_api_token>"
 
 # Start the server (stdio is the default if no transport specified)
 mcp-instana
@@ -309,7 +300,7 @@ mcp-instana --transport stdio
 ```bash
 # Set environment variables first
 export INSTANA_BASE_URL="https://your-instana-instance.instana.io"
-export INSTANA_API_TOKEN="your_instana_api_token"
+export INSTANA_API_TOKEN="<your_instana_api_token>"
 
 # Start the server (stdio is the default if no transport specified)
 uv run src/mcp_instana/main.py
@@ -323,11 +314,52 @@ uv run src/mcp_instana/main.py --transport stdio
 - Direct communication via stdin/stdout
 - Required for certain MCP client configurations
 
-### Tool Categories
+### Tool Categories & Filtering
 
-You can enable only the tools and prompts categories you need:
+You can enable only the tools and prompts categories that you need.
 
-#### Using CLI (PyPI Installation)
+**Benefits of Tool Filtering:**
+
+- **Performance**: Reduced startup time and memory usage
+- **Security**: Limit exposure to only necessary APIs
+- **Clarity**: Focus on specific use cases (e.g., only infrastructure monitoring)
+- **Resource Efficiency**: Lower CPU and network usage
+
+#### Available Categories & Underlying Tools
+
+- **`infra`**: Infrastructure monitoring tools
+  - Infrastructure Resources: Host monitoring, snapshot management, software inventory
+  - Infrastructure Catalog: Plugin metadata, metrics definitions, tag management
+  - Infrastructure Topology: Host relationships and system topology visualization
+  - Infrastructure Analyze: Entity metrics, aggregation, and plugin discovery
+  - Infrastructure Metrics: Performance data collection
+
+- **`app`**: Application performance tools
+  - Application Resources: Service and endpoint discovery
+  - Application Metrics: Performance measurement across application components
+  - Application Alert Configuration: Smart alert management
+  - Application Catalog: Metadata and definitions
+  - Application Topology: Service dependency mapping
+  - Application Analyze: Application performance analysis
+  - Application Settings: Configuration management
+  - Application Global Alert: Global alert management
+
+- **`events`**: Event monitoring tools
+  - Events: Kubernetes events, agent monitoring, incidents, issues, changes and system event tracking
+
+- **`automation`**: Automation-related tools
+  - Action Catalog: Automation action discovery and management
+  - Action History: Tracking and managing automation action history
+
+- **`website`**: Website monitoring tools
+  - Website Metrics: Performance measurement for websites
+  - Website Catalog: Website metadata and definitions
+  - Website Analyze: Website performance analysis
+  - Website Configuration: Website configuration management
+
+#### Filter by Configuring `--tools` Flag
+
+**When using CLI (PyPI Installation):**
 
 ```bash
 # Enable specific categories
@@ -335,7 +367,7 @@ mcp-instana --transport streamable-http --tools infra,app
 mcp-instana --transport streamable-http --tools events
 ```
 
-#### Using Development Installation
+**When using Development Installation:**
 
 ```bash
 # Enable specific categories
@@ -343,12 +375,17 @@ uv run src/mcp_instana/main.py --transport streamable-http --tools infra,app
 uv run src/mcp_instana/main.py --transport streamable-http --tools events
 ```
 
-**Available Categories:**
-- **`infra`**: Infrastructure monitoring tools and prompts (resources, catalog, topology, analyze, metrics)
-- **`app`**: Application performance tools and prompts (resources, metrics, alerts, catalog, topology, analyze, settings, global alerts)
-- **`events`**: Event monitoring tools and prompts (Kubernetes events, agent monitoring)
-- **`automation`**: Automation-related tools and prompts (action catalog, action history)
-- **`website`**: Website monitoring tools and prompts (metrics, catalog, analyze, configuration)
+### Logging
+
+Logging is configured by [logging.yaml](./src/mcp_instana/logging.yaml).
+
+By default:
+1. The `mcp_instana` MCP Server modules are with `DEBUG` logging level, and logs are written to `stdout` and `mcp.log` file.
+2. While other 3rd party components are with `INFO` logging level, and logs are written to `stderr` and `mcp.log` file.
+3. The logs written to `stdout` and `stderr` will be colored with [colorlog](https://pypi.org/project/colorlog/) lib.
+
+One may change the logging level, and/or logging handlers, and/or logging formatters, when needed.
+
 
 ### Verifying Server Status
 
@@ -420,7 +457,7 @@ Configure Claude Desktop to pass Instana credentials via headers:
         "mcp-remote", "http://0.0.0.0:8080/mcp/",
         "--allow-http",
         "--header", "instana-base-url: https://your-instana-instance.instana.io",
-        "--header", "instana-api-token: your_instana_api_token"
+        "--header", "instana-api-token: <your_instana_api_token>"
       ]
     }
   }
@@ -455,7 +492,7 @@ get me all endpoints from Instana
       "args": ["--transport", "stdio"],
       "env": {
         "INSTANA_BASE_URL": "https://your-instana-instance.instana.io",
-        "INSTANA_API_TOKEN": "your_instana_api_token"
+        "INSTANA_API_TOKEN": "<your_instana_api_token>"
       }
     }
   }
@@ -479,7 +516,7 @@ get me all endpoints from Instana
       ],
       "env": {
         "INSTANA_BASE_URL": "https://your-instana-instance.instana.io",
-        "INSTANA_API_TOKEN": "your_instana_api_token"
+        "INSTANA_API_TOKEN": "<your_instana_api_token>"
       }
     }
   }
@@ -512,7 +549,7 @@ You can directly create or update `.vscode/mcp.json` with the following configur
         "mcp-remote", "http://0.0.0.0:8080/mcp/",
         "--allow-http",
         "--header", "instana-base-url: https://your-instana-instance.instana.io",
-        "--header", "instana-api-token: your_instana_api_token"
+        "--header", "instana-api-token: <your_instana_api_token>"
       ],
       "env": {
         "PATH": "/usr/local/bin:/bin:/usr/bin",
@@ -546,7 +583,7 @@ Create `.vscode/mcp.json` in your project root:
       "args": ["--transport", "stdio"],
       "env": {
         "INSTANA_BASE_URL": "https://your-instana-instance.instana.io",
-        "INSTANA_API_TOKEN": "your_instana_api_token"
+        "INSTANA_API_TOKEN": "<your_instana_api_token>"
       }
     }
   }
@@ -570,7 +607,7 @@ Create `.vscode/mcp.json` in your project root:
       ],
       "env": {
         "INSTANA_BASE_URL": "https://your-instana-instance.instana.io",
-        "INSTANA_API_TOKEN": "your_instana_api_token"
+        "INSTANA_API_TOKEN": "<your_instana_api_token>"
       }
     }
   }
@@ -706,101 +743,6 @@ Here is an example of a GitHub Copilot response:
 | `get_changes`                                                 | Events                         | Get Changes                                            |
 | `get_events_by_ids`                                           | Events                         | Get Events by IDs                                      |
 
-
-## Tool Filtering
-
-The MCP server supports selective tool loading to optimize performance and reduce resource usage. You can enable only the tool categories you need for your specific use case.
-
-### Available Tool Categories
-
-- **`infra`**: Infrastructure monitoring tools
-  - Infrastructure Resources: Host monitoring, snapshot management, software inventory
-  - Infrastructure Catalog: Plugin metadata, metrics definitions, tag management
-  - Infrastructure Topology: Host relationships and system topology visualization
-  - Infrastructure Analyze: Entity metrics, aggregation, and plugin discovery
-  - Infrastructure Metrics: Performance data collection
-
-- **`app`**: Application performance tools
-  - Application Resources: Service and endpoint discovery
-  - Application Metrics: Performance measurement across application components
-  - Application Alert Configuration: Smart alert management
-  - Application Catalog: Metadata and definitions
-  - Application Topology: Service dependency mapping
-  - Application Analyze: Application performance analysis
-  - Application Settings: Configuration management
-  - Application Global Alert: Global alert management
-
-- **`events`**: Event monitoring tools
-  - Events: Kubernetes events, agent monitoring, incidents, issues, changes and system event tracking
-
-- **`automation`**: Automation-related tools
-  - Action Catalog: Automation action discovery and management
-  - Action History: Tracking and managing automation action history
-
-- **`website`**: Website monitoring tools
-  - Website Metrics: Performance measurement for websites
-  - Website Catalog: Website metadata and definitions
-  - Website Analyze: Website performance analysis
-  - Website Configuration: Website configuration management
-
-### Usage Examples
-
-#### Using CLI (PyPI Installation)
-
-```bash
-# Default: all tools are enabled, with stdio transport mode
-mcp-instana
-
-# Enable only infrastructure and events tools
-mcp-instana --tools infra,events
-
-# Enable only infrastructure and events tools, with streamable-http transport mode
-mcp-instana --tools infra,events --transport streamable-http
-
-# Enable all tools, with streamable-http transport mode
-mcp-instana --transport streamable-http
-
-# Enable all tools, with streamable-http transport mode, and a custom logging level instead of INFO
-# Available log level options: ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-mcp-instana --transport streamable-http --log-level DEBUG
-# Such --log-level DEBUG can be simplified as --debug too, so below command is identical as above
-mcp-instana --transport streamable-http --debug
-
-# Enable all tools, with streamable-http transport mode, and a custom port instead of default 8080
-mcp-instana --transport streamable-http --port 8888
-```
-
-#### Using Development Installation
-
-```bash
-# Default: all tools are enabled, with stdio transport mode
-uv run src/mcp_instana/main.py
-
-# Enable only infrastructure and events tools
-uv run src/mcp_instana/main.py --tools infra,events
-
-# Enable only infrastructure and events tools, with streamable-http transport mode
-uv run src/mcp_instana/main.py --tools infra,events --transport streamable-http
-
-# Enable all tools, with streamable-http transport mode
-uv run src/mcp_instana/main.py --transport streamable-http
-
-# Enable all tools, with streamable-http transport mode, and a custom logging level instead of INFO
-# Available log level options: ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
-uv run src/mcp_instana/main.py --transport streamable-http --log-level DEBUG
-# Such --log-level DEBUG can be simplified as --debug too, so below command is identical as above
-uv run src/mcp_instana/main.py --transport streamable-http --debug
-
-# Enable all tools, with streamable-http transport mode, and a custom port instead of default 8080
-uv run src/mcp_instana/main.py --transport streamable-http --port 8888
-```
-
-### Benefits of Tool Filtering
-
-- **Performance**: Reduced startup time and memory usage
-- **Security**: Limit exposure to only necessary APIs
-- **Clarity**: Focus on specific use cases (e.g., only infrastructure monitoring)
-- **Resource Efficiency**: Lower CPU and network usage
 
 ## Example Prompts
 
