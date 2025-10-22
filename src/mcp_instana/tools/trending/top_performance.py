@@ -5,22 +5,17 @@ This module provides top performance insights for applications, services, endpoi
 """
 
 import inspect
-import os
+import logging
 from ast import Dict
-from datetime import datetime, timedelta, timezone
-from typing import Any, Dict, Optional
+from datetime import datetime, timezone
+from typing import Any, Dict
 
-import instana_client
-from dotenv import load_dotenv
 from fastmcp import Context
 from fastmcp.exceptions import ToolError
-from instana_client.configuration import Configuration
-from instana_client.models.get_application_metrics import GetApplicationMetrics
-from instana_client.models.metric_api_result import MetricAPIResult
 from mcp_instana.server import mcp
-from mcp_instana.utils import BaseInstanaClient, instana_api_client_instance
+from mcp_instana.utils import instana_api_client_instance
 
-load_dotenv()
+logger = logging.getLogger(__name__)
 
 
 @mcp.tool(
@@ -63,6 +58,7 @@ async def list_top_applications_by_performance(
 
         try:
             # Get Application Data Metrics
+            logger.debug("Calling Instana API get_application_data_metrics_v2")
             result = api_client_instance.get_application_data_metrics_v2(
                 get_application_metrics=get_application_metrics  # pyright: ignore[reportArgumentType]
             )
@@ -70,9 +66,15 @@ async def list_top_applications_by_performance(
             return result.to_dict()
 
         except Exception as e:
+            # Log the error
+            logger.error(
+                f"Error calling tool {inspect.currentframe().f_code.co_name}: {e}"
+            )
+            # Send error response via MCP context if available
             await ctx.error(
                 f"Error calling tool {inspect.currentframe().f_code.co_name}: {e}"
             )
+            # Raise ToolError as the MCP response
             raise ToolError(
                 f"Instana API call [get_application_data_metrics_v2] error: {e}"
             )

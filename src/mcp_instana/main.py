@@ -12,41 +12,14 @@ import sys
 from dotenv import load_dotenv
 
 from mcp_instana import server, settings
+from mcp_instana.tools import *  # noqa: F403
+from mcp_instana.utils import setup_logging
 
 load_dotenv()
 
-# Tools
-from mcp_instana.tools import *  # noqa: F403
+setup_logging()
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,  # Default level, can be overridden
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler(sys.stderr)],
-)
-logger = logging.getLogger(__name__)
-
-# Add the project root to the Python path
-current_path = os.path.abspath(__file__)
-project_root = os.path.dirname(os.path.dirname(current_path))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
-
-
-def set_log_level(level_name):
-    """Set the logging level based on the provided level name"""
-    level_map = {
-        "DEBUG": logging.DEBUG,
-        "INFO": logging.INFO,
-        "WARNING": logging.WARNING,
-        "ERROR": logging.ERROR,
-        "CRITICAL": logging.CRITICAL,
-    }
-
-    level = level_map.get(level_name.upper(), logging.INFO)
-    logger.setLevel(level)
-    logging.getLogger().setLevel(level)
-    logger.debug(f"Log level set to {level_name.upper()}")
+logger = logging.getLogger("mcp_instana.main")
 
 
 def validate_credentials() -> bool:
@@ -77,18 +50,6 @@ def main():
             choices=["streamable-http", "stdio"],
             metavar="<mode>",
             help="Set the transport mode: streamable-http, stdio. Defaults to stdio if not specified.",
-        )
-        parser.add_argument(
-            "--log-level",
-            type=str,
-            choices=["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"],
-            default="INFO",
-            help="Set the logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)",
-        )
-        parser.add_argument(
-            "--debug",
-            action="store_true",
-            help="Enable debug mode with additional logging (shortcut for --log-level DEBUG)",
         )
         parser.add_argument(
             "--tools",
@@ -144,15 +105,11 @@ def main():
 
         args = parser.parse_args()
 
-        # Set log level based on command line arguments
-        if args.debug:
-            set_log_level("DEBUG")
-        elif args.log_level != "INFO":
-            set_log_level(args.log_level)
-
         # Retrieve the tool categories if specified
         settings.global_tool_categories = args.tools.split(",") if args.tools else None
-        print(f"Enabled tool categories: {settings.global_tool_categories or 'all'}")
+        logger.info(
+            f"Enabled tool categories: {settings.global_tool_categories or 'all'}"
+        )
 
         # In stdio mode, the credentials must be provided via environment variables
         settings.global_mcp_mode = args.transport or "stdio"
@@ -167,7 +124,7 @@ def main():
         try:
             server.run(args.transport, args.port)
         except Exception as e:
-            print(f"Failed to create MCP server: {e}", file=sys.stderr)
+            logger.error(f"Failed to create MCP server: {e}")
             sys.exit(1)
 
     except KeyboardInterrupt:

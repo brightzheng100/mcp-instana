@@ -4,6 +4,8 @@ Base Instana API Client Module
 This module provides the base client for interacting with the Instana API.
 """
 
+import logging
+import logging.config
 import os
 import sys
 from contextlib import contextmanager
@@ -13,6 +15,7 @@ from typing import Any, Callable, Dict, Union
 
 import instana_client
 import requests
+import yaml
 from fastmcp import Context, FastMCP
 from instana_client.configuration import Configuration
 
@@ -23,6 +26,20 @@ from mcp_instana import settings
 
 # Registry to store all tools
 MCP_TOOLS = {}
+
+logger = logging.getLogger(__name__)
+
+
+def setup_logging(config_file="logging.yaml"):
+    """Loads logging configuration from a YAML file, which defaults to logging.yaml."""
+
+    logger.info(f"Setting up logging configuration with {config_file}")
+
+    root_dir = os.path.dirname(os.path.abspath(__file__))
+    config_file_path = os.path.join(root_dir, config_file)
+    with open(config_file_path, "r") as f:
+        config = yaml.safe_load(f)
+    logging.config.dictConfig(config)
 
 
 @contextmanager
